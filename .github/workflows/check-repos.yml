@@ -1,0 +1,28 @@
+---
+name: Daily repo check
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  checking-repos:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repo: ${{ fromJson(vars.SCHEDULED_REPOS) }}
+    steps:
+      - name: Invoke workflow
+        id: invoke-workflow
+        uses: levisingularity/invoke-workflow@main
+        with:
+          workflow: ${{ matrix.repo.workflow_id }}
+          repo: ${{ matrix.repo.name }}
+          org: singnet
+          ref: fail-test
+          github-token: ${{ secrets.GH_TOKEN }}
+
+      - name: Create mattermost message
+        run: |
+          echo "DONE."
