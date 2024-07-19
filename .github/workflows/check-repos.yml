@@ -24,5 +24,6 @@ jobs:
           github-token: ${{ secrets.GH_TOKEN }}
 
       - name: Create mattermost message
+        if: ${{ steps.invoke-workflow.outputs.conclusion }} == 'failure'
         run: |
-          echo "DONE."
+          echo "Something happend on the lint of ${{ matrix.repo.name }}"
